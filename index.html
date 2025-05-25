@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ExPreS Score Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 1rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #004d66;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background: #007b8a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005f6b;
+    }
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      color: #003344;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Extubation Predictive Score (ExPreS)</h2>
+
+    <label for="rsbi">RSBI in SBT (breaths/min/L)</label>
+    <select id="rsbi">
+      <option value="25">≤ 42</option>
+      <option value="20">43 – 54</option>
+      <option value="10">55 – 76</option>
+      <option value="5">77 – 90</option>
+      <option value="0">≥ 91</option>
+    </select>
+
+    <label for="compliance">Dynamic Lung Compliance (ml/cmH₂O)</label>
+    <select id="compliance">
+      <option value="15">≥ 63</option>
+      <option value="10">51 – 62</option>
+      <option value="7">43 – 50</option>
+      <option value="3">32 – 42</option>
+      <option value="0">&lt; 32</option>
+    </select>
+
+    <label for="ventilation">Days of Mechanical Ventilation</label>
+    <select id="ventilation">
+      <option value="10">1 – 3</option>
+      <option value="7">4 – 5</option>
+      <option value="4">6 – 8</option>
+      <option value="1">9 – 10</option>
+      <option value="0">≥ 11</option>
+    </select>
+
+    <label for="glasgow">Estimated Glasgow Coma Scale</label>
+    <select id="glasgow">
+      <option value="10">≥ 13.5</option>
+      <option value="6">11.7 – 13.4</option>
+      <option value="3">8.9 – 11.6</option>
+      <option value="0">&lt; 8.9</option>
+    </select>
+
+    <label for="strength">Muscle Strength (MRC)</label>
+    <select id="strength">
+      <option value="10">49 – 60</option>
+      <option value="7">37 – 48</option>
+      <option value="4">25 – 36</option>
+      <option value="1">13 – 24</option>
+      <option value="0">0 – 12</option>
+    </select>
+
+    <label for="hematocrit">Hematocrit (%)</label>
+    <select id="hematocrit">
+      <option value="10">≥ 37</option>
+      <option value="7">32 – 36</option>
+      <option value="3">26 – 31</option>
+      <option value="1">22 – 25</option>
+      <option value="0">&lt; 22</option>
+    </select>
+
+    <label for="creatinine">Creatinine (mg/dL)</label>
+    <select id="creatinine">
+      <option value="10">≤ 0.99</option>
+      <option value="7">1.0 – 1.2</option>
+      <option value="4">1.3 – 1.5</option>
+      <option value="1">1.6 – 2.9</option>
+      <option value="0">≥ 3</option>
+    </select>
+
+    <label for="neuro">Neurological Comorbidity</label>
+    <select id="neuro">
+      <option value="10">No</option>
+      <option value="0">Yes</option>
+    </select>
+
+    <button onclick="calculateScore()">Calcular Puntaje</button>
+
+    <div class="result" id="result">Total: —</div>
+  </div>
+
+  <script>
+    function calculateScore() {
+      let total = 0;
+      total += parseInt(document.getElementById('rsbi').value);
+      total += parseInt(document.getElementById('compliance').value);
+      total += parseInt(document.getElementById('ventilation').value);
+      total += parseInt(document.getElementById('glasgow').value);
+      total += parseInt(document.getElementById('strength').value);
+      total += parseInt(document.getElementById('hematocrit').value);
+      total += parseInt(document.getElementById('creatinine').value);
+      total += parseInt(document.getElementById('neuro').value);
+
+      let probabilidad = "";
+      if (total < 44) {
+        probabilidad = "Probabilidad baja de éxito (50%)";
+      } else if (total >= 45 && total <= 58) {
+        probabilidad = "Probabilidad intermedia de éxito (80%)";
+      } else if (total > 59) {
+        probabilidad = "Probabilidad alta de éxito (97.7%)";
+      }
+
+      document.getElementById('result').innerHTML = `
+        <strong>Total:</strong> ${total} puntos<br>
+        <strong>${probabilidad}</strong>
+      `;
+    }
+  </script>
+</body>
+</html>
