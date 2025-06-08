@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <title>ExPreS Score Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 3rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .header-image {
+      width: 80px;
+      height: auto;
+    }
+    .header h2 {
+      flex: 1;
+      margin: 0;
+      font-size: 1.8rem;
+      color: #004d66;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background: #007b8a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005f6b;
+    }
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      color: #003344;
+    }
+
+    .development {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+      color: #003344;
+    }
+
+    .categorias-container {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    }
+
+    .categoria {
+    flex: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    min-width: 80px;
+    max-width: 100%;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    color: black;
+    font-size: 0.9rem;
+    transition: opacity 0.5s ease, transform 0.3s ease;
+    opacity: 0.4;
+    box-sizing: border-box;
+    }
+
+
+    .categoria strong {
+      display: block;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .categoria.selected {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    #baja { background-color: #da5c4e; }        
+    #intermedia { background-color: #e8c128; }  
+    #alta { background-color: #65d192; } 
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="https://www.instagram.com/gricioinvestigacion?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer">
+        <img src="logo.jpg" alt="Logo izquierda" class="header-image" />
+      </a>
+      <h2>Extubation Predictive Score (ExPreS)</h2>
+      <img src="Logo_UdC.png" alt="Logo derecha" class="header-image" />
+    </div>
+
+    <!-- Selects -->
+    <label for="rsbi">RSBI en SBT (respiraciones/min/L)</label>
+    <select id="rsbi">
+      <option value="25">≤ 42</option>
+      <option value="20">43 – 54</option>
+      <option value="10">55 – 76</option>
+      <option value="5">77 – 90</option>
+      <option value="0">≥ 91</option>
+    </select>
+
+    <label for="compliance">Compliancia pulmonar (ml/cmH₂O)</label>
+    <select id="compliance">
+      <option value="15">≥ 63</option>
+      <option value="10">51 – 62</option>
+      <option value="7">43 – 50</option>
+      <option value="3">32 – 42</option>
+      <option value="0">&lt; 32</option>
+    </select>
+
+    <label for="ventilation">Días de ventilación mecánica</label>
+    <select id="ventilation">
+      <option value="10">1 – 3</option>
+      <option value="7">4 – 5</option>
+      <option value="4">6 – 8</option>
+      <option value="1">9 – 10</option>
+      <option value="0">≥ 11</option>
+    </select>
+
+    <label for="glasgow">Escala de Coma de Glasgow estimada</label>
+    <select id="glasgow">
+      <option value="10"> >13</option>
+      <option value="6">11 – 13</option>
+      <option value="3">9 – 10</option>
+      <option value="0">&lt; 8 </option>
+    </select>
+
+    <label for="strength">Fuerza muscular (MRC)</label>
+    <select id="strength">
+       
+      <option value="10">49 – 60</option>
+      <option value="7">37 – 48</option>
+      <option value="4">25 – 36</option>
+      <option value="1">13 – 24</option>
+      <option value="0">0 – 12</option>
+    </select>
+
+    <label for="hematocrit">Hematocrito (%)</label>
+    <select id="hematocrit">
+      <option value="10">≥ 37</option>
+      <option value="7">32 – 36</option>
+      <option value="3">26 – 31</option>
+      <option value="1">22 – 25</option>
+      <option value="0">&lt; 22</option>
+    </select>
+
+    <label for="creatinine">Creatinina (mg/dL)</label>
+    <select id="creatinine">
+      <option value="10">≤ 0.99</option>
+      <option value="7">1.0 – 1.2</option>
+      <option value="4">1.3 – 1.5</option>
+      <option value="1">1.6 – 2.9</option>
+      <option value="0">≥ 3</option>
+    </select>
+
+    <label for="neuro">Comorbilidad neurológica</label>
+    <select id="neuro">
+      <option value="10">No</option>
+      <option value="0">Sí</option>
+    </select>
+
+    <button onclick="calculateScore()">Calcular Puntaje</button>
+
+    <div class="result">Probabilidad de exito</div>
+    
+    <!-- <div id="result" class="result">Probabilidad de exito</div> -->
+
+    <div class="categorias-container">
+    <div id="baja" class="categoria">
+      <strong>Baja</strong>
+      50% de éxito 
+    </div>
+    <div id="intermedia" class="categoria">
+      <strong>Intermedia</strong>
+      80% de éxito 
+    </div>
+    <div id="alta" class="categoria">
+      <strong>Alta</strong>
+      97.7% de éxito 
+    </div>
+  </div>
+    <canvas id="scoreChart" width="50" height="25" style="margin-top: 1rem;"></canvas>
+    <div class="development">
+      Developed by Diego Cabarcas, member of: Grupo de investigación en cuidados intensivos y obstétricos (GRICIO)
+    </div>
+
+    <div class="development">
+      Adapted to Spanish from: Baptistella, A. R., et al. (2021). <em>Prediction of extubation outcome in mechanically ventilated patients: Development and validation of the Extubation Predictive Score (ExPreS)</em>. 
+      <a href="https://doi.org/10.1371/journal.pone.0248868" target="_blank">https://doi.org/10.1371/journal.pone.0248868</a>. <strong>PLoS ONE, 16(3)</strong>, e0248868.
+    </div>
+  </div>
+
+  <script>
+    let chartInstance = null;  // Esto debe ir arriba de todo
+   function calculateScore() {
+      let total = 0;
+      total += parseInt(document.getElementById('rsbi').value);
+      total += parseInt(document.getElementById('compliance').value);
+      total += parseInt(document.getElementById('ventilation').value);
+      total += parseInt(document.getElementById('glasgow').value);
+      total += parseInt(document.getElementById('strength').value);
+      total += parseInt(document.getElementById('hematocrit').value);
+      total += parseInt(document.getElementById('creatinine').value);
+      total += parseInt(document.getElementById('neuro').value);
+
+      let probabilidad = "";
+      let categoriaId = "";
+
+      if (total < 44) {
+        probabilidad = "Probabilidad baja de éxito (50%)";
+        categoriaId = "baja";
+      } else if (total >= 44 && total <= 58) {
+        probabilidad = "Probabilidad intermedia de éxito (80%)";
+        categoriaId = "intermedia";
+      } else if (total > 59) {
+        probabilidad = "Probabilidad alta de éxito (97.7%)";
+        categoriaId = "alta";
+      }
+
+      /*
+      document.getElementById('result').innerHTML = `
+        <strong>Total:</strong> ${total} puntos<br>
+        <strong>${probabilidad}</strong>
+      `; 
+      */
+
+     
+      document.querySelectorAll('.categoria').forEach(div => {
+        div.classList.remove('selected');
+      });
+
+      document.getElementById(categoriaId).classList.add('selected');
+      renderScoreChart(total);
+
+    }
+
+  document.querySelectorAll("select").forEach(select => {
+    select.addEventListener("change", checkFormCompletion);
+  });
+    function renderScoreChart(score) {
+      const ctx = document.getElementById('scoreChart').getContext('2d');
+
+      const data = {
+        datasets: [{
+          label: 'Puntaje ExPreS',
+          data: [{ x: score, y: 1 }],
+          backgroundColor: '#004d66',
+          pointRadius: 8
+        }]
+      };
+
+      const options = {
+        responsive: true,
+        scales: {
+          x: {
+            type: 'linear',
+            min: -2,
+            max: 102,
+            title: {
+              display: true,
+              text: 'Puntaje total'
+            },
+            ticks: {
+              stepSize: 10,
+              callback: function(value) {
+                // Mostrar solo los valores entre 0 y 100
+                return value >= 0 && value <= 100 ? value : '';
+              }
+            }
+          },
+          y: {
+            display: false,
+            min: 0,
+            max: 2
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      };
+
+
+      // Si ya existe un gráfico, lo destruimos
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      const backgroundZonePlugin = {
+
+      id: 'backgroundZonePlugin',
+      beforeDraw: (chart) => {
+        const { ctx, chartArea: { left, right, top, bottom }, scales: { x } } = chart;
+
+        const zones = [
+          { from: -2, to: 44, color: '#f8d7da' },       // Zona baja - rojo claro
+          { from: 44, to: 58, color: '#fff3cd' },      // Zona intermedia - amarillo claro
+          { from: 58, to: 102, color: '#d4edda' }      // Zona alta - verde claro
+        ];
+
+        zones.forEach(zone => {
+          const startX = x.getPixelForValue(zone.from);
+          const endX = x.getPixelForValue(zone.to);
+          ctx.fillStyle = zone.color;
+          ctx.fillRect(startX, top, endX - startX, bottom - top);
+        });
+      }
+    };
+
+      
+
+      chartInstance = new Chart(ctx, {
+        type: 'scatter',
+        data: data,
+        options: options,
+        plugins: [backgroundZonePlugin] // <-- Agregado aquí
+      });
+    }
+  </script>
+</body>
+</html>
