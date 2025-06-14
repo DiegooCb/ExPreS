@@ -305,7 +305,7 @@
             ticks: {
               stepSize: 10,
               callback: function(value) {
-                // Mostrar solo los valores entre 0 y 100
+                
                 return value >= 0 && value <= 100 ? value : '';
               }
             }
@@ -324,7 +324,7 @@
       };
 
 
-      // Si ya existe un gráfico, lo destruimos
+      
       if (chartInstance) {
         chartInstance.destroy();
       }
@@ -356,7 +356,7 @@
         type: 'scatter',
         data: data,
         options: options,
-        plugins: [backgroundZonePlugin] // <-- Agregado aquí
+        plugins: [backgroundZonePlugin] 
       });
     }
   </script>
